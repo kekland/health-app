@@ -1,4 +1,3 @@
-import 'package:health_app/design/future_page.dart';
 import 'package:health_app/design/shadows/shadows.dart';
 import 'package:health_app/design/typography/typography.dart';
 import 'package:flutter/material.dart';
