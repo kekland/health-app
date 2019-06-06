@@ -14,7 +14,7 @@ class RecordWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return CardWidget(
-      padding: const EdgeInsets.all(16.0),
+      padding: const EdgeInsets.all(24.0),
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisSize: MainAxisSize.min,

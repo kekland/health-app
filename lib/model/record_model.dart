@@ -34,20 +34,36 @@ class PatientInformation {
 
   List<Record> records;
   String diseaseType;
+
   Duration interval;
+  DateTime startTime;
+  int count;
   
   String hospitalName;
   LatLng hospitalPosition;
 
-  PatientInformation({this.id, this.records, this.name, this.diseaseType, this.interval, this.hospitalName, this.hospitalPosition});
+  PatientInformation({this.id, this.records, this.name, this.diseaseType, this.interval, this.hospitalName, this.hospitalPosition, this.count, this.startTime});
 
   PatientInformation.fromJson(Map<String, dynamic> json) {
     id = json['id'] as String;
     name = json['name'] as String;
     records = (json['records'] as List<dynamic>).map((rec) => Record.fromJson(rec)).toList();
     diseaseType = json['diseaseType'] as String;
-    interval = Duration(seconds: json['interval'] as int);
+    startTime = DateTime.parse(json['timing']['startTime']);
+    count = json['timing']['count'] as int;
+    interval = Duration(seconds: json['timing']['interval'] as int);
     hospitalName = json['hospital']['name'];
     hospitalPosition = LatLng.fromJson(json['hospital']['position']);
+  }
+
+  DateTime calculateNextHospitalAppointmentTime() {
+    DateTime now = DateTime.now();
+
+    for(int i = 0; i < count; i++) {
+      if(startTime.add(interval).isAfter(now)) {
+        return startTime.add(interval);
+      }
+    }
+    return null;
   }
 }

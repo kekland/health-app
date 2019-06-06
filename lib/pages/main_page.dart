@@ -30,6 +30,8 @@ class _MainPageState extends State<MainPage> {
       hospitalName: "СПИД центр No. 1",
       hospitalPosition: LatLng(latitude: 100.0, longitude: 90.0),
       interval: Duration(days: 3),
+      startTime: DateTime(2019, 6, 6),
+      count: 100,
       records: [
         for (int i = 0; i < 5; i++)
           Record(
@@ -72,6 +74,7 @@ class _MainPageState extends State<MainPage> {
                         child: Column(
                           children: [
                             PatientWidget(data: data),
+                            SizedBox(height: 16.0),
                             ...(data.records
                                 .map((record) => Padding(
                                       padding:
