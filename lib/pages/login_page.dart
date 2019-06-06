@@ -20,7 +20,7 @@ class _LoginPageState extends State<LoginPage> {
           Container(
             decoration: BoxDecoration(
               gradient: LinearGradient(
-                colors: [Colors.red, Colors.pink],
+                colors: [Colors.blue, Colors.indigo],
                 begin: Alignment.topLeft,
                 end: Alignment.bottomRight,
               ),
@@ -37,17 +37,17 @@ class _LoginPageState extends State<LoginPage> {
                       height: 56.0,
                       child: FlatButton(
                         child: Text("Войти"),
-                        onPressed: () {},
-                        textColor: Colors.pink,
+                        onPressed: () => Navigator.pushNamed(context, "/main"),
+                        textColor: Colors.blue,
                         shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(12.0)),
+                            borderRadius: BorderRadius.vertical(top: Radius.zero, bottom: Radius.circular(12.0))),
                       ),
                     ),
                   ],
                   body: Column(
                     children: [
                       Text(
-                        'Войти',
+                        'Вход в систему',
                         style: TextStyle(
                             fontSize: 24.0, fontWeight: FontWeight.w500),
                       ),
