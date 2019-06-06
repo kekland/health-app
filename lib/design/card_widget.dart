@@ -7,7 +7,9 @@ class CardWidget extends StatelessWidget {
   final List<Widget> actions;
   final VoidCallback onTap;
 
-  const CardWidget({Key key, this.body, this.padding, this.actions = const [], this.onTap}) : super(key: key);
+  const CardWidget(
+      {Key key, this.body, this.padding, this.actions = const [], this.onTap})
+      : super(key: key);
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -34,15 +36,17 @@ class CardWidget extends StatelessWidget {
                 child: body,
               ),
               Padding(
-                padding: EdgeInsets.only(left: padding.left, right: padding.right),
+                padding:
+                    EdgeInsets.only(left: padding.left, right: padding.right),
                 child: Container(
                   height: (actions.length > 0) ? 1.0 : 0.0,
                   color: Colors.black.withOpacity(0.035),
                 ),
               ),
-              Row(
-                children: actions,
-              ),
+              if (actions.length > 0)
+                Row(
+                  children: actions.map((action) => Expanded(child: action)).toList(),
+                ),
             ],
           ),
         ),
