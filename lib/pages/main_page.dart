@@ -8,6 +8,7 @@ import 'package:health_app/model/record_model.dart';
 import 'package:health_app/utils.dart';
 import 'package:health_app/widgets/patient_widget.dart';
 import 'package:health_app/widgets/record_widget.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class MainPage extends StatefulWidget {
   @override
@@ -27,7 +28,7 @@ class _MainPageState extends State<MainPage> {
       DataSnapshot snapshot = await FirebaseDatabase.instance
           .reference()
           .child("patients")
-          .child("021107501405")
+          .child((await SharedPreferences.getInstance()).getString("pin"))
           .once();
       //await Future.delayed(Duration(seconds: 3));
       print(snapshot.value);

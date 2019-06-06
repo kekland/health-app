@@ -67,11 +67,9 @@ class PatientInformation {
 
   DateTime calculateNextHospitalAppointmentTime() {
     DateTime now = DateTime.now();
-    print(startTime);
-    print(interval);
-    print(count);
-
-    DateTime time = now;
+    DateTime time = startTime.toUtc();
+    print(time);
+    print(interval.inDays);
 
     for (int i = 0; i < count; i++) {
       if (time.isAfter(now)) {
