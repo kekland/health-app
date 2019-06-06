@@ -28,6 +28,7 @@ dependencies:
   intl:
   firebase_database:
   shared_preferences:
+  firebase_messaging:
   firebase_auth:
 
 dev_dependencies:

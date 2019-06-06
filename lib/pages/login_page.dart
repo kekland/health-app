@@ -1,4 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_database/firebase_database.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:health_app/design/card_widget.dart';
@@ -18,14 +20,33 @@ class _LoginPageState extends State<LoginPage> {
   Future login(BuildContext context) async {
     try {
       showLoadingDialog(context: context, color: Colors.blue);
-      FirebaseUser user = await FirebaseAuth.instance.signInWithEmailAndPassword(email: "$pin@salut.com", password: password);
+      FirebaseUser user = await FirebaseAuth.instance
+          .signInWithEmailAndPassword(
+              email: "$pin@salut.com", password: password);
+
+      FirebaseMessaging _firebaseMessaging = new FirebaseMessaging();
+
       (await SharedPreferences.getInstance()).setString("pin", pin);
+
+      String token = await (_firebaseMessaging.getToken());
+      _firebaseMessaging.requestNotificationPermissions();
+      
+      FirebaseDatabase.instance
+          .reference()
+          .child("patients")
+          .child(pin)
+          .child("cloudMessagingId")
+          .set(token);
+      
       Navigator.of(context).pop();
       Navigator.pushReplacementNamed(context, "/main");
-    }
-    catch(e) {
+    } catch (e) {
       Navigator.of(context).pop();
-      showErrorSnackbarKeyed(key: scaffoldKey, context: context, errorMessage: "Произошла ошибка.", exception: e);
+      showErrorSnackbarKeyed(
+          key: scaffoldKey,
+          context: context,
+          errorMessage: "Произошла ошибка.",
+          exception: e);
     }
   }
 
@@ -60,7 +81,9 @@ class _LoginPageState extends State<LoginPage> {
                         onPressed: () => login(context),
                         textColor: Colors.blue,
                         shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.vertical(top: Radius.zero, bottom: Radius.circular(12.0))),
+                            borderRadius: BorderRadius.vertical(
+                                top: Radius.zero,
+                                bottom: Radius.circular(12.0))),
                       ),
                     ),
                   ],
