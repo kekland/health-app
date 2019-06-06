@@ -1,19 +1,17 @@
 class Record {
-  String id;
   double weight;
   double height;
   String comment;
   DateTime date;
 
-  Record({this.id, this.weight, this.height, this.comment, this.date});
+  Record({this.weight, this.height, this.comment, this.date});
 
-  Record.fromJson(Map<String, dynamic> json) {
-    this.id = json['id'] as String;
+  Record.fromJson(Map json) {
     this.weight = (json['weight'] as num).toDouble();
     this.height = (json['height'] as num).toDouble();
     this.comment = json['comment'] as String;
     this.date = DateTime.parse(json['date']);
-  }  
+  }
 }
 
 class LatLng {
@@ -22,14 +20,13 @@ class LatLng {
 
   LatLng({this.latitude, this.longitude});
 
-  LatLng.fromJson(Map<String, dynamic> json) {
+  LatLng.fromJson(Map json) {
     latitude = (json['latitude'] as num).toDouble();
     longitude = (json['longitude'] as num).toDouble();
   }
 }
 
 class PatientInformation {
-  String id;
   String name;
 
   List<Record> records;
@@ -38,18 +35,30 @@ class PatientInformation {
   Duration interval;
   DateTime startTime;
   int count;
-  
+
   String hospitalName;
   LatLng hospitalPosition;
 
-  PatientInformation({this.id, this.records, this.name, this.diseaseType, this.interval, this.hospitalName, this.hospitalPosition, this.count, this.startTime});
+  PatientInformation(
+      {this.records,
+      this.name,
+      this.diseaseType,
+      this.interval,
+      this.hospitalName,
+      this.hospitalPosition,
+      this.count,
+      this.startTime});
 
-  PatientInformation.fromJson(Map<String, dynamic> json) {
-    id = json['id'] as String;
+  PatientInformation.fromJson(Map json) {
     name = json['name'] as String;
-    records = (json['records'] as List<dynamic>).map((rec) => Record.fromJson(rec)).toList();
+    List recs = json['records'];
+    records = [];
+    for (Map rec in recs) {
+      records.add(Record.fromJson(rec));
+    }
     diseaseType = json['diseaseType'] as String;
-    startTime = DateTime.parse(json['timing']['startTime']);
+    startTime =
+        DateTime.fromMillisecondsSinceEpoch(json['timing']['startTime'] * 1000);
     count = json['timing']['count'] as int;
     interval = Duration(seconds: json['timing']['interval'] as int);
     hospitalName = json['hospital']['name'];
@@ -58,11 +67,17 @@ class PatientInformation {
 
   DateTime calculateNextHospitalAppointmentTime() {
     DateTime now = DateTime.now();
+    print(startTime);
+    print(interval);
+    print(count);
 
-    for(int i = 0; i < count; i++) {
-      if(startTime.add(interval).isAfter(now)) {
-        return startTime.add(interval);
+    DateTime time = now;
+
+    for (int i = 0; i < count; i++) {
+      if (time.isAfter(now)) {
+        return time;
       }
+      time = time.add(interval);
     }
     return null;
   }

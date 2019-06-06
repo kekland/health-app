@@ -26,7 +26,7 @@ class PatientWidget extends StatelessWidget {
             icon: FontAwesomeIcons.hospitalSymbol,
             iconColor: ModernTextTheme.captionIconColor,
             title: "В больницу",
-            value: dateTimeToString(data.calculateNextHospitalAppointmentTime().toLocal() ?? DateTime.now()),
+            value: dateTimeToString(data.calculateNextHospitalAppointmentTime()?.toLocal() ?? DateTime.now()),
             unit: "",
           ),
           SizedBox(height: 16.0),

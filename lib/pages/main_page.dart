@@ -1,8 +1,11 @@
+import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:health_app/design/app_bar_widget.dart';
 import 'package:health_app/design/card_widget.dart';
 import 'package:health_app/design/circular_progress_reveal_widget.dart';
 import 'package:health_app/model/record_model.dart';
+import 'package:health_app/utils.dart';
 import 'package:health_app/widgets/patient_widget.dart';
 import 'package:health_app/widgets/record_widget.dart';
 
@@ -20,33 +23,31 @@ class _MainPageState extends State<MainPage> {
       data = null;
       loading = true;
     });
-
-    await Future.delayed(Duration(seconds: 3));
-
-    PatientInformation newData = new PatientInformation(
-      id: "0",
-      name: "Умирбаев Алихан",
-      diseaseType: "СПИД",
-      hospitalName: "СПИД центр No. 1",
-      hospitalPosition: LatLng(latitude: 100.0, longitude: 90.0),
-      interval: Duration(days: 3),
-      startTime: DateTime(2019, 6, 6),
-      count: 100,
-      records: [
-        for (int i = 0; i < 5; i++)
-          Record(
-            id: i.toString(),
-            weight: 80.0 + i,
-            height: 165.0 + i,
-            comment: 'Вроде все заебись',
-            date: DateTime(2019, 6, i + 1),
-          ),
-      ],
-    );
-    setState(() {
-      data = newData;
-      loading = false;
-    });
+    try {
+      DataSnapshot snapshot = await FirebaseDatabase.instance
+          .reference()
+          .child("patients")
+          .child("021107501405")
+          .once();
+      //await Future.delayed(Duration(seconds: 3));
+      print(snapshot.value);
+      setState(() {
+        Map<String, dynamic> map = Map<String, dynamic>.from(snapshot.value);
+        print(map.runtimeType);
+        data = PatientInformation.fromJson(map);
+        loading = false;
+      });
+    } catch (e) {
+      showErrorSnackbarKeyed(
+          key: scaffoldKey,
+          context: context,
+          errorMessage: "Что-то пошло не так",
+          exception: e);
+      setState(() {
+        data = null;
+        loading = false;
+      });
+    }
   }
 
   @override
@@ -55,17 +56,21 @@ class _MainPageState extends State<MainPage> {
     super.initState();
   }
 
+  GlobalKey<ScaffoldState> scaffoldKey = GlobalKey();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      key: scaffoldKey,
       body: SafeArea(
         child: Column(
           children: [
             AppBarWidget(
               title: Text('Учёт'),
+              action: IconButton(icon: Icon(Icons.refresh, color: Colors.blue), onPressed: () => loadData(context)),
             ),
             Expanded(
-              child: (!loading)
+              child: (!loading && data != null)
                   ? RefreshIndicator(
                       onRefresh: () => loadData(context),
                       child: SingleChildScrollView(
@@ -86,9 +91,19 @@ class _MainPageState extends State<MainPage> {
                         ),
                       ),
                     )
-                  : Center(
-                      child: CircularProgressRevealWidget(color: Colors.blue),
-                    ),
+                  : ((loading && data == null)
+                      ? Center(
+                          child:
+                              CircularProgressRevealWidget(color: Colors.blue),
+                        )
+                      : Center(
+                          child: IconButton(
+                            icon: Icon(Icons.refresh),
+                            iconSize: 36.0,
+                            color: Colors.blue,
+                            onPressed: () => loadData(context),
+                          ),
+                        )),
             ),
           ],
         ),
