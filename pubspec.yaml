@@ -26,7 +26,8 @@ dependencies:
   swipedetector:
   font_awesome_flutter:
   intl:
-
+  firebase_database:
+  
 dev_dependencies:
   flutter_test:
     sdk: flutter

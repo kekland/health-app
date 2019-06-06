@@ -1,4 +1,4 @@
-package com.example.health_app;
+package com.kekland.salut;
 
 import android.os.Bundle;
 import io.flutter.app.FlutterActivity;
